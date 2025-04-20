@@ -1,0 +1,165 @@
+"use client"
+
+import Image from "next/image"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { ArrowRight, Zap, Database, Workflow, Users } from "lucide-react"
+import ClientSynapseNetwork from "@/components/client-synapse-network"
+// Dynamically import SynapseNetworkBackground with SSR disabled
+// const SynapseNetworkBackground = dynamic(
+//   () => import('@/components/synapse-network-background'),
+//   { ssr: false }
+// )
+
+export default function Home() {
+  return (
+    <main className="flex min-h-screen flex-col bg-black text-white overflow-hidden">
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-black/80 border-b border-teal-500/20">
+        <div className="container mx-auto px-4 py-1 flex justify-between items-center">
+          <div className="flex items-center">
+            <Link href="/">
+              <Image
+                src="/logo-full.png"
+                alt="SynapseCare Logo"
+                width={280}
+                height={80}
+                className="h-32 w-auto"
+                priority
+              />
+            </Link>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link href="/demo" className="text-teal-300 hover:text-teal-200 transition-colors">
+              Demo
+            </Link>
+            <Link href="/request-access">
+              <Button className="bg-teal-500 hover:bg-teal-400 text-black font-medium">Get Started</Button>
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="min-h-screen flex items-center justify-center relative pt-20 pb-20">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black pointer-events-none z-10" />
+        <div className="container mx-auto px-4 relative z-20 text-center">
+          <Badge className="mb-4 bg-teal-500/20 text-teal-300 border-teal-500/30 backdrop-blur-sm py-1.5 inline-flex">
+            <span className="animate-pulse mr-1.5 h-2 w-2 rounded-full bg-teal-400 inline-block"></span>
+            Now in Beta
+          </Badge>
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <span className="bg-gradient-to-r from-teal-400 to-teal-200 bg-clip-text text-transparent">AI-Powered</span>
+            <br />
+            <span className="text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">Patient Matching</span>
+          </h1>
+          <p className="text-xl text-gray-300 max-w-2xl mb-8 drop-shadow-sm mx-auto">
+            SynapseCare uses sophisticated AI algorithms to find the best patients for your clinical trials. Plugs
+            directly into your hospital's API for seamless integration.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/request-access">
+              <Button className="bg-teal-500 hover:bg-teal-400 text-black font-medium text-lg px-8 py-6">
+                Request Access <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/demo">
+              <Button
+                variant="outline"
+                className="border-teal-500/50 bg-black/40 text-teal-300 hover:bg-teal-950 hover:text-white text-lg px-8 py-6"
+              >
+                See Demo
+              </Button>
+            </Link>
+          </div>
+        </div>
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <ClientSynapseNetwork />
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 relative bg-gradient-to-b from-black to-teal-950/20">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-gradient-to-br from-teal-950/50 to-black/80 border border-teal-500/20 hover:border-teal-500/40 transition-all duration-300 rounded-xl p-6 group">
+              <div className="bg-teal-900/30 p-3 rounded-lg w-fit mb-4">
+                <Database className="h-8 w-8 text-teal-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white group-hover:text-teal-300 transition-colors duration-300 mb-2">
+                Hospital API Integration
+              </h3>
+              <p className="text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+                Seamlessly connects to your existing hospital systems to access patient data securely and efficiently.
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-teal-950/50 to-black/80 border border-teal-500/20 hover:border-teal-500/40 transition-all duration-300 rounded-xl p-6 group">
+              <div className="bg-teal-900/30 p-3 rounded-lg w-fit mb-4">
+                <Workflow className="h-8 w-8 text-teal-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white group-hover:text-teal-300 transition-colors duration-300 mb-2">
+                Sophisticated Algorithms
+              </h3>
+              <p className="text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+                Our AI analyzes complex eligibility criteria and patient records to find optimal matches for clinical
+                trials.
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-teal-950/50 to-black/80 border border-teal-500/20 hover:border-teal-500/40 transition-all duration-300 rounded-xl p-6 group">
+              <div className="bg-teal-900/30 p-3 rounded-lg w-fit mb-4">
+                <Users className="h-8 w-8 text-teal-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white group-hover:text-teal-300 transition-colors duration-300 mb-2">
+                Patient Matching
+              </h3>
+              <p className="text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+                Identify eligible patients for your trials with precision, improving recruitment rates and trial
+                success.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-teal-950/10 to-black pointer-events-none" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="bg-gradient-to-r from-teal-900/30 to-teal-800/30 backdrop-blur-xl rounded-3xl p-12 border border-teal-500/20">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Ready to transform your{" "}
+                  <span className="bg-gradient-to-r from-teal-400 to-teal-200 bg-clip-text text-transparent">
+                    clinical trial recruitment
+                  </span>
+                  ?
+                </h2>
+                <p className="text-xl text-gray-300 max-w-2xl">
+                  Join our beta program and be among the first to leverage AI-powered patient matching.
+                </p>
+              </div>
+              <Link href="/request-access">
+                <Button className="bg-teal-500 hover:bg-teal-400 text-black font-medium text-lg px-8 py-6 whitespace-nowrap">
+                  Get Early Access <Zap className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-black border-t border-teal-900/30 py-8">
+        <div className="container mx-auto px-4">
+          <div className="text-center text-gray-500 text-sm">
+            <p>© {new Date().getFullYear()} SynapseCare, Inc. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </main>
+  )
+}
