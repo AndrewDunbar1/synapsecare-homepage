@@ -12,6 +12,9 @@ export default function NeuralNetworkSimulation() {
 
   useEffect(() => {
     if (!containerRef.current) return
+    
+    // Store container reference to avoid null checks
+    const container = containerRef.current
 
     // Scene setup
     const scene = new THREE.Scene()
@@ -26,9 +29,9 @@ export default function NeuralNetworkSimulation() {
       alpha: true,
     })
     renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1)
-    renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight)
+    renderer.setSize(container.clientWidth, container.clientHeight)
     renderer.setClearColor(0x000000, 0)
-    containerRef.current.appendChild(renderer.domElement)
+    container.appendChild(renderer.domElement)
 
     // Post-processing
     const composer = new EffectComposer(renderer)
@@ -191,8 +194,8 @@ export default function NeuralNetworkSimulation() {
     return () => {
       window.removeEventListener("resize", handleResize)
 
-      if (containerRef.current && containerRef.current.contains(renderer.domElement)) {
-        containerRef.current.removeChild(renderer.domElement)
+      if (container && container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement)
       }
 
       // Dispose of geometries and materials
