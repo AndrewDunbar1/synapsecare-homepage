@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 
 // Add type definition for global p5 - needed for TypeScript build
@@ -13,12 +13,8 @@ declare global {
 export default function SynapseNetworkBackground() {
   const containerRef = useRef<HTMLDivElement>(null)
   const p5InstanceRef = useRef<any>(null); // Ref to store the p5 instance
-  const [isClientReady, setIsClientReady] = useState(false); // State to track if client & p5 are ready
 
   useEffect(() => {
-    // Indicate component has mounted on client
-    setIsClientReady(true);
-
     // Guard against running logic if component unmounts early or no container
     if (!containerRef.current) return;
 
@@ -54,7 +50,8 @@ export default function SynapseNetworkBackground() {
           [20, 184, 166], // teal-500
           [13, 148, 136], // teal-600
         ];
-        let mouseX = p.width / 2, mouseY = p.height / 2, mouseInfluenceRadius = 250, mouseInfluenceStrength = 0.02, lastMouseMoveTime = 0, mouseActivity = 0;
+        let mouseX = p.width / 2, mouseY = p.height / 2, lastMouseMoveTime = 0, mouseActivity = 0;
+        const mouseInfluenceRadius = 250, mouseInfluenceStrength = 0.02;
 
         p.mouseMoved = () => {
           mouseX = p.mouseX;
@@ -226,14 +223,13 @@ export default function SynapseNetworkBackground() {
           // script.removeEventListener('load', initP5);
        }
     };
-  }, [isClientReady]); // Re-run effect if needed, though it gates on client-side mount
+  }, []); // Re-run effect only once on mount
 
   return (
     <motion.div
       ref={containerRef}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: isClientReady ? 1 : 0 }} // Use isClientReady for initial fade-in
-      transition={{ duration: 0.75 }} // Adjust timing as needed
+      initial={{ opacity: 1 }} // Start visible
+      animate={{ opacity: 1 }}
       className="fixed inset-0 w-full h-full z-[-1] pointer-events-none" // Ensure it doesn't block interactions
       style={{ position: "fixed" }} // Optional: Explicitly set position
     />

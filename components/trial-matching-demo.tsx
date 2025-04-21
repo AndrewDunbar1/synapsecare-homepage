@@ -7,9 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Upload, FileJson, Users, UserCheck, UserX, Play, Database, AlertCircle, Loader2, CheckCircle2 } from "lucide-react"
+import { Play, Database, AlertCircle, Loader2, CheckCircle2, FileJson, UserCheck, UserX } from "lucide-react"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
-import { Progress } from "@/components/ui/progress"
 
 // API Configuration
 const API_BASE_URL = 'http://localhost:8000'; 

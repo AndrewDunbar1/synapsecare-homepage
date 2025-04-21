@@ -16,62 +16,22 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <Script id="fix-paths" strategy="beforeInteractive">
           {`
             (function() {
-              try {
-                if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-                  var base = '/synapsecare-homepage';
-                  
-                  // Fix dynamic imports paths
-                  var originalCreateElement = document.createElement;
-                  document.createElement = function(tag) {
-                    var element = originalCreateElement.call(document, tag);
-                    if (tag.toLowerCase() === 'script') {
-                      var originalSetAttribute = element.setAttribute;
-                      element.setAttribute = function(name, value) {
-                        if (name === 'src' && value && value.startsWith('/') && !value.startsWith(base)) {
-                          value = base + value;
-                        }
-                        return originalSetAttribute.call(this, name, value);
-                      };
-                    }
-                    return element;
-                  };
-                  
-                  // Fix link hrefs and script srcs
-                  var fixElements = function() {
-                    var links = document.getElementsByTagName('link');
-                    var scripts = document.getElementsByTagName('script');
-                    
-                    for (var i = 0; i < links.length; i++) {
-                      if (links[i].href && !links[i].href.includes(base) && links[i].href.startsWith(window.location.origin)) {
-                        links[i].href = links[i].href.replace(window.location.origin, window.location.origin + base);
-                      }
-                    }
-                    
-                    for (var j = 0; j < scripts.length; j++) {
-                      if (scripts[j].src && !scripts[j].src.includes(base) && scripts[j].src.startsWith(window.location.origin)) {
-                        scripts[j].src = scripts[j].src.replace(window.location.origin, window.location.origin + base);
-                      }
-                    }
-                  };
-                  
-                  fixElements();
-                  // Run periodically to catch dynamically added elements
-                  setInterval(fixElements, 1000);
-                }
-              } catch(e) {
-                console.error('Error in path fix script:', e);
+              if (window.location.hostname !== 'localhost') {
+                var base = document.createElement('base');
+                base.href = '/synapsecare-homepage/';
+                document.head.prepend(base);
               }
             })();
           `}
         </Script>
       </head>
       <body className="bg-black min-h-screen">
-        <ThemeProvider attribute="class" defaultTheme="dark">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           {children}
         </ThemeProvider>
       </body>

@@ -13,9 +13,19 @@ try {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Add output: 'export' for static site generation
+  output: 'export',
+  // Set basePath for GitHub Pages deployment
+  // Replace '/synapsecare-homepage' if your repository name is different
+  basePath: '/synapsecare-homepage',
+  // Disable trailing slash to prevent path issues
+  trailingSlash: false,
+  // Asset prefix for GitHub Pages
+  assetPrefix: '/synapsecare-homepage',
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // Add ignoreBuildErrors for TypeScript
   typescript: {
     ignoreBuildErrors: true,
   },
