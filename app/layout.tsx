@@ -21,24 +21,50 @@ export default function RootLayout({
         <Script id="fix-paths" strategy="beforeInteractive">
           {`
             (function() {
-              if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-                var base = '/synapsecare-homepage';
-                var links = document.getElementsByTagName('link');
-                var scripts = document.getElementsByTagName('script');
-                
-                // Fix link hrefs
-                for (var i = 0; i < links.length; i++) {
-                  if (links[i].href && links[i].href.indexOf(base) === -1 && links[i].href.indexOf('http') === 0) {
-                    links[i].href = links[i].href.replace(window.location.origin, window.location.origin + base);
-                  }
+              try {
+                if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+                  var base = '/synapsecare-homepage';
+                  
+                  // Fix dynamic imports paths
+                  var originalCreateElement = document.createElement;
+                  document.createElement = function(tag) {
+                    var element = originalCreateElement.call(document, tag);
+                    if (tag.toLowerCase() === 'script') {
+                      var originalSetAttribute = element.setAttribute;
+                      element.setAttribute = function(name, value) {
+                        if (name === 'src' && value && value.startsWith('/') && !value.startsWith(base)) {
+                          value = base + value;
+                        }
+                        return originalSetAttribute.call(this, name, value);
+                      };
+                    }
+                    return element;
+                  };
+                  
+                  // Fix link hrefs and script srcs
+                  var fixElements = function() {
+                    var links = document.getElementsByTagName('link');
+                    var scripts = document.getElementsByTagName('script');
+                    
+                    for (var i = 0; i < links.length; i++) {
+                      if (links[i].href && !links[i].href.includes(base) && links[i].href.startsWith(window.location.origin)) {
+                        links[i].href = links[i].href.replace(window.location.origin, window.location.origin + base);
+                      }
+                    }
+                    
+                    for (var j = 0; j < scripts.length; j++) {
+                      if (scripts[j].src && !scripts[j].src.includes(base) && scripts[j].src.startsWith(window.location.origin)) {
+                        scripts[j].src = scripts[j].src.replace(window.location.origin, window.location.origin + base);
+                      }
+                    }
+                  };
+                  
+                  fixElements();
+                  // Run periodically to catch dynamically added elements
+                  setInterval(fixElements, 1000);
                 }
-                
-                // Fix script srcs
-                for (var j = 0; j < scripts.length; j++) {
-                  if (scripts[j].src && scripts[j].src.indexOf(base) === -1 && scripts[j].src.indexOf('http') === 0) {
-                    scripts[j].src = scripts[j].src.replace(window.location.origin, window.location.origin + base);
-                  }
-                }
+              } catch(e) {
+                console.error('Error in path fix script:', e);
               }
             })();
           `}

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Zap, Database, Workflow, Users } from "lucide-react"
 import ClientSynapseNetwork from "@/components/client-synapse-network"
+import { useEffect, useState } from "react"
 // Dynamically import SynapseNetworkBackground with SSR disabled
 // const SynapseNetworkBackground = dynamic(
 //   () => import('@/components/synapse-network-background'),
@@ -13,6 +14,15 @@ import ClientSynapseNetwork from "@/components/client-synapse-network"
 // )
 
 export default function Home() {
+  // Use state for asset prefix to avoid hydration mismatch
+  const [assetPrefix, setAssetPrefix] = useState('')
+  
+  useEffect(() => {
+    // Set asset prefix based on environment
+    const prefix = process.env.NODE_ENV === 'production' ? '/synapsecare-homepage' : ''
+    setAssetPrefix(prefix)
+  }, [])
+
   return (
     <main className="flex min-h-screen flex-col bg-black text-white overflow-hidden">
       {/* Navigation */}
@@ -21,7 +31,7 @@ export default function Home() {
           <div className="flex items-center">
             <Link href="/">
               <Image
-                src="/logo-full.png"
+                src={`${assetPrefix}/logo-full.png`}
                 alt="SynapseCare Logo"
                 width={280}
                 height={80}

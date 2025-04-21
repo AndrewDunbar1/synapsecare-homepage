@@ -1,25 +1,25 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 
-// Import the SynapseNetworkBackground component with SSR disabled
+// Import the SynapseNetworkBackground component with SSR disabled and no loading fallback
 const SynapseNetworkBackground = dynamic(
   () => import('./synapse-network-background'),
-  { ssr: false }
+  { ssr: false, loading: () => null }
 )
 
 export default function ClientSynapseNetwork() {
-  const [isMounted, setIsMounted] = useState(false)
+  // Use state to track if we're in browser environment
+  const [isClient, setIsClient] = useState(false)
   
-  // Only render on client-side
   useEffect(() => {
-    setIsMounted(true)
+    setIsClient(true)
   }, [])
   
-  // Prevent hydration mismatch by only rendering the component client-side
-  if (!isMounted) {
-    return null // Return null during server rendering and initial mount
+  // Prevent hydration issues by only rendering on client
+  if (!isClient) {
+    return null
   }
   
   return (
