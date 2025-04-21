@@ -2,7 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Set a global dark theme base */
 :root {
+  --foreground-rgb: 255, 255, 255;
+  --background-rgb: 0, 0, 0;
   --background: 0 0% 0%;
   --foreground: 0 0% 100%;
   --card: 0 0% 3%;
@@ -26,8 +29,42 @@
 }
 
 body {
-  background-color: black;
-  color: white;
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+/* Fix for 3D and animation canvas elements */
+canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  position: fixed;
+  z-index: -1;
+}
+
+/* Ensure proper display of elements with fixed positioning */
+.fixed {
+  position: fixed !important;
+}
+
+/* Ensure content is visible */
+.z-0 {
+  z-index: 0;
+}
+
+.z-[-1] {
+  z-index: -1;
+}
+
+/* Text visibility improvements */
+.text-white {
+  color: #ffffff !important;
+}
+
+/* Adjust container margins for GitHub Pages */
+.container {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @layer base {

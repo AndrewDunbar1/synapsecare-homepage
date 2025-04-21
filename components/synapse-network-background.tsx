@@ -2,17 +2,24 @@
 
 import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
-import p5 from "p5"
+import dynamic from "next/dynamic"
+
+// Import p5 only on client side
+let p5: any
+if (typeof window !== 'undefined') {
+  p5 = require('p5')
+}
 
 export default function SynapseNetworkBackground() {
   const containerRef = useRef<HTMLDivElement>(null)
   const sketchRef = useRef<any>(null)
 
   useEffect(() => {
-    if (!containerRef.current) return
+    // Only run in browser
+    if (typeof window === 'undefined' || !containerRef.current || !p5) return
 
     // Create the p5 sketch
-    const sketch = (p: p5) => {
+    const sketch = (p: any) => {
       const nodes: {
         x: number
         y: number
