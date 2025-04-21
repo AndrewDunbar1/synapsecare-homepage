@@ -31,9 +31,6 @@ export default function Home() {
             </Link>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/demo" className="text-teal-300 hover:text-teal-200 transition-colors">
-              Demo
-            </Link>
             <Link href="/request-access">
               <Button className="bg-teal-500 hover:bg-teal-400 text-black font-medium">Get Started</Button>
             </Link>
@@ -43,18 +40,18 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center relative pt-20 pb-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black pointer-events-none z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/60 pointer-events-none z-10" />
         <div className="container mx-auto px-4 relative z-20 text-center">
           <Badge className="mb-4 bg-teal-500/20 text-teal-300 border-teal-500/30 backdrop-blur-sm py-1.5 inline-flex">
             <span className="animate-pulse mr-1.5 h-2 w-2 rounded-full bg-teal-400 inline-block"></span>
             Now in Beta
           </Badge>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight opacity-90">
             <span className="bg-gradient-to-r from-teal-400 to-teal-200 bg-clip-text text-transparent">AI-Powered</span>
             <br />
-            <span className="text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">Patient Matching</span>
+            <span className="text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]">Patient Matching</span>
           </h1>
-          <p className="text-xl text-gray-300 max-w-2xl mb-8 drop-shadow-sm mx-auto">
+          <p className="text-lg text-gray-300 max-w-2xl mb-8 drop-shadow-sm mx-auto backdrop-blur-sm bg-black/30 px-5 py-3 rounded-lg inline-block">
             SynapseCare uses sophisticated AI algorithms to find the best patients for your clinical trials. Plugs
             directly into your hospital's API for seamless integration.
           </p>
@@ -62,14 +59,6 @@ export default function Home() {
             <Link href="/request-access">
               <Button className="bg-teal-500 hover:bg-teal-400 text-black font-medium text-lg px-8 py-6">
                 Request Access <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Link href="/demo">
-              <Button
-                variant="outline"
-                className="border-teal-500/50 bg-black/40 text-teal-300 hover:bg-teal-950 hover:text-white text-lg px-8 py-6"
-              >
-                See Demo
               </Button>
             </Link>
           </div>

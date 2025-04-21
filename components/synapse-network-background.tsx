@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 import p5 from "p5"
 
@@ -22,13 +22,28 @@ export default function SynapseNetworkBackground() {
         pulseSpeed: number
         pulsePhase: number
       }[] = []
-      const numNodes = 100
-      const maxDistance = 180
+      const numNodes = 150
+      const maxDistance = 200
       const nodeColors = [
         [45, 212, 191], // teal-400
         [20, 184, 166], // teal-500
         [13, 148, 136], // teal-600
       ]
+      
+      // Mouse interaction variables
+      let mouseX = p.width / 2
+      let mouseY = p.height / 2
+      let mouseInfluenceRadius = 250
+      let mouseInfluenceStrength = 0.02
+      let lastMouseMoveTime = 0
+      let mouseActivity = 0 // 0-1 value for mouse activity
+      
+      p.mouseMoved = () => {
+        mouseX = p.mouseX
+        mouseY = p.mouseY
+        lastMouseMoveTime = p.millis()
+        mouseActivity = 1 // Set to full activity when mouse moves
+      }
 
       const drawPulse = (node1: any, node2: any, distance: number) => {
         const pulseCount = 3 // Number of pulses
@@ -37,8 +52,8 @@ export default function SynapseNetworkBackground() {
           const x = p.lerp(node1.x, node2.x, pulsePosition)
           const y = p.lerp(node1.y, node2.y, pulsePosition)
 
-          const pulseSize = p.map(distance, 0, maxDistance * 0.7, 10, 3)
-          const pulseOpacity = p.map(distance, 0, maxDistance * 0.7, 100, 20)
+          const pulseSize = p.map(distance, 0, maxDistance * 0.7, 12, 4)
+          const pulseOpacity = p.map(distance, 0, maxDistance * 0.7, 120, 30)
 
           const colorIndex = k % nodeColors.length
           const [r, g, b] = nodeColors[colorIndex]
@@ -64,7 +79,7 @@ export default function SynapseNetworkBackground() {
             y: p.random(p.height),
             vx: p.random(-0.5, 0.5),
             vy: p.random(-0.5, 0.5),
-            size: p.random(2, 4),
+            size: p.random(2.5, 5),
             pulseSpeed: p.random(0.02, 0.05),
             pulsePhase: p.random(0, p.TWO_PI),
           })
@@ -74,11 +89,46 @@ export default function SynapseNetworkBackground() {
       p.draw = () => {
         p.clear() // Transparent background
 
+        // Update mouse activity (gradually decrease when mouse is not moving)
+        const timeSinceMouseMove = p.millis() - lastMouseMoveTime
+        if (timeSinceMouseMove > 300) { // Start fading after 300ms of inactivity
+          mouseActivity = p.max(0, mouseActivity - 0.01) // Gradually decrease
+        }
+
         // Update node positions
-        for (const n of nodes) {
+        for (let i = 0; i < nodes.length; i++) {
+          const n = nodes[i]
+          
+          // Apply mouse influence
+          if (mouseActivity > 0) {
+            // Calculate distance to mouse
+            const dx = n.x - mouseX
+            const dy = n.y - mouseY
+            const distToMouse = p.sqrt(dx * dx + dy * dy)
+            
+            if (distToMouse < mouseInfluenceRadius) {
+              // Create subtle attraction or gentle swirling effect
+              const influenceFactor = p.map(distToMouse, 0, mouseInfluenceRadius, mouseInfluenceStrength, 0) * mouseActivity
+              
+              // Gentle attraction toward mouse
+              n.vx += (mouseX - n.x) * influenceFactor * 0.01
+              n.vy += (mouseY - n.y) * influenceFactor * 0.01
+              
+              // Or create a subtle swirl around the mouse
+              const angle = p.atan2(dy, dx) + p.PI/2
+              n.vx += p.cos(angle) * influenceFactor
+              n.vy += p.sin(angle) * influenceFactor
+            }
+          }
+          
+          // Normal movement
           n.x += n.vx
           n.y += n.vy
           n.pulsePhase += n.pulseSpeed
+          
+          // Add slight damping to prevent excessive speed
+          n.vx *= 0.99
+          n.vy *= 0.99
 
           // Keep them on screen with a bounce effect
           if (n.x < 0 || n.x > p.width) {
@@ -97,21 +147,30 @@ export default function SynapseNetworkBackground() {
             const dx = nodes[i].x - nodes[j].x
             const dy = nodes[i].y - nodes[j].y
             const distance = p.sqrt(dx * dx + dy * dy)
+            
+            // Check if either node is near the mouse, if so enhance the connection
+            const node1DistToMouse = p.dist(nodes[i].x, nodes[i].y, mouseX, mouseY)
+            const node2DistToMouse = p.dist(nodes[j].x, nodes[j].y, mouseX, mouseY)
+            const nearMouse = (node1DistToMouse < mouseInfluenceRadius || node2DistToMouse < mouseInfluenceRadius)
+            
+            // Enhance connections near mouse
+            const mouseBoost = nearMouse ? mouseActivity * 1.5 : 1
 
             if (distance < maxDistance) {
               // Calculate opacity based on distance
-              const opacity = p.map(distance, 0, maxDistance, 130, 15)
+              const opacity = p.map(distance, 0, maxDistance, 150, 25) * mouseBoost
 
               // Draw line with gradient
               const colorIndex = i % nodeColors.length
               const [r, g, b] = nodeColors[colorIndex]
 
-              p.stroke(r, g, b, opacity * 0.6)
-              p.strokeWeight(p.map(distance, 0, maxDistance, 1.8, 0.3))
+              p.stroke(r, g, b, opacity * 0.75)
+              p.strokeWeight(p.map(distance, 0, maxDistance, 2, 0.4) * (nearMouse ? 1 + mouseActivity * 0.8 : 1))
               p.line(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y)
 
               // Draw pulse effect along the line
-              if (distance < maxDistance * 0.7 && p.random() > 0.98) {
+              const pulseProbability = nearMouse ? 0.93 - mouseActivity * 0.1 : 0.96
+              if (distance < maxDistance * 0.7 && p.random() > pulseProbability) {
                 drawPulse(nodes[i], nodes[j], distance)
               }
             }
@@ -124,20 +183,26 @@ export default function SynapseNetworkBackground() {
           const n = nodes[i]
           const colorIndex = i % nodeColors.length
           const [r, g, b] = nodeColors[colorIndex]
-
+          
+          // Check if node is near mouse
+          const distToMouse = p.dist(n.x, n.y, mouseX, mouseY)
+          const nearMouse = distToMouse < mouseInfluenceRadius
+          const highlightFactor = nearMouse ? 1 + (mouseActivity * (1 - distToMouse/mouseInfluenceRadius)) : 1
+          
           // Outer glow
-          const pulseSize = n.size + p.sin(n.pulsePhase) * 1.8
-          const glowSize = pulseSize * 3.5
+          const pulseSize = n.size + p.sin(n.pulsePhase) * 2.2
+          const glowSize = pulseSize * 4 * highlightFactor
 
-          p.fill(r, g, b, 25)
+          const glowAlpha = 35 * highlightFactor
+          p.fill(r, g, b, glowAlpha)
           p.circle(n.x, n.y, glowSize)
 
-          p.fill(r, g, b, 45)
+          p.fill(r, g, b, 55 * highlightFactor)
           p.circle(n.x, n.y, glowSize * 0.7)
 
           // Core
-          p.fill(r, g, b, 230)
-          p.circle(n.x, n.y, pulseSize)
+          p.fill(r, g, b, 245)
+          p.circle(n.x, n.y, pulseSize * highlightFactor)
         }
       }
 
