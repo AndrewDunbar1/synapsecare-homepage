@@ -6,13 +6,6 @@ import { Badge } from "@/components/ui/badge"
 import { Database, Workflow, Users } from "lucide-react"
 import ClientSynapseNetwork from "@/components/client-synapse-network"
 import { useEffect, useState } from "react"
-// Remove Avatar imports as they're only used in the testimonial section
-// import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-// Dynamically import SynapseNetworkBackground with SSR disabled
-// const SynapseNetworkBackground = dynamic(
-//   () => import('@/components/synapse-network-background'),
-//   { ssr: false }
-// )
 
 export default function Home() {
   // Use state for asset prefix to avoid hydration mismatch
@@ -60,7 +53,7 @@ export default function Home() {
           </h1>
           <p className="text-lg text-gray-300 max-w-2xl mb-8 drop-shadow-sm mx-auto backdrop-blur-sm bg-black/30 px-5 py-3 rounded-lg inline-block">
             SynapseCare uses sophisticated AI algorithms to find the best patients for your clinical trials. Plugs
-            directly into your hospital&apos;s API for seamless integration.
+            directly into your hospital's API for seamless integration.
           </p>
           
         </div>
@@ -137,8 +130,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Delete entire Testimonial Section */}
 
       {/* Footer */}
       <footer className="bg-black border-t border-teal-900/30 py-8">
