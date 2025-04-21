@@ -29,6 +29,23 @@ export default function RootLayout({
             })();
           `}
         </Script>
+        {/* Add inline critical CSS to ensure basic styling is available immediately */}
+        <style dangerouslySetInnerHTML={{ __html: `
+          body { 
+            background-color: #000000; 
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+          }
+          .bg-black {
+            background-color: #000000;
+          }
+          .text-white {
+            color: #ffffff;
+          }
+        `}} />
+        {/* Preload the p5.js library */}
+        <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" as="script" />
       </head>
       <body className="bg-black min-h-screen">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
