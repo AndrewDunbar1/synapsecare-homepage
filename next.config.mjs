@@ -22,6 +22,9 @@ const nextConfig = {
   trailingSlash: false,
   // Asset prefix for GitHub Pages
   assetPrefix: '/synapsecare-homepage',
+  // Skip prerendering 404 page
+  skipTrailingSlashRedirect: true,
+  skipMiddlewareUrlNormalize: true,
   eslint: {
     ignoreDuringBuilds: true,
   },

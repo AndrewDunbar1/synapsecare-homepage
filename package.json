@@ -8,7 +8,7 @@
     "build-force": "next build --no-typescript",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "rm -rf .next out && next build && touch out/.nojekyll && npx gh-pages -d out",
+    "deploy": "rm -rf .next out && NEXT_SKIP_404_GENERATION=true next build && touch out/.nojekyll && npx gh-pages -d out",
     "deploy-force": "npm run build-force && touch out/.nojekyll && npx gh-pages -d out"
   },
   "dependencies": {
