@@ -3,6 +3,13 @@
 import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 
+// Add type definition for global p5
+declare global {
+  interface Window {
+    p5: any;
+  }
+}
+
 export default function SynapseNetworkBackground() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isLoaded, setIsLoaded] = useState(false)
@@ -24,8 +31,16 @@ export default function SynapseNetworkBackground() {
       const container = containerRef.current
       
       // Create the p5 sketch
-      const sketch = (p) => {
-        const nodes = []
+      const sketch = (p: any) => {
+        const nodes: Array<{
+          x: number;
+          y: number;
+          vx: number;
+          vy: number;
+          size: number;
+          pulseSpeed: number;
+          pulsePhase: number;
+        }> = []
         const numNodes = 150
         const maxDistance = 200
         const nodeColors = [
@@ -49,7 +64,7 @@ export default function SynapseNetworkBackground() {
           mouseActivity = 1 // Set to full activity when mouse moves
         }
 
-        const drawPulse = (node1, node2, distance) => {
+        const drawPulse = (node1: any, node2: any, distance: number) => {
           const pulseCount = 3 // Number of pulses
           for (let k = 0; k < pulseCount; k++) {
             const pulsePosition = (p.frameCount / 30 + k / pulseCount) % 1 // Normalized pulse position
