@@ -30,11 +30,7 @@ export default function Home() {
               />
             </Link>
           </div>
-          <div className="flex items-center gap-4">
-            <Link href="/request-access">
-              <Button className="bg-teal-500 hover:bg-teal-400 text-black font-medium">Get Started</Button>
-            </Link>
-          </div>
+          <div></div>
         </div>
       </nav>
 
@@ -55,13 +51,7 @@ export default function Home() {
             SynapseCare uses sophisticated AI algorithms to find the best patients for your clinical trials. Plugs
             directly into your hospital's API for seamless integration.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/request-access">
-              <Button className="bg-teal-500 hover:bg-teal-400 text-black font-medium text-lg px-8 py-6">
-                Request Access <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
+          
         </div>
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <ClientSynapseNetwork />
@@ -118,7 +108,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-teal-950/10 to-black pointer-events-none" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="bg-gradient-to-r from-teal-900/30 to-teal-800/30 backdrop-blur-xl rounded-3xl p-12 border border-teal-500/20">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex flex-col items-center text-center">
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
                   Ready to transform your{" "}
@@ -127,15 +117,11 @@ export default function Home() {
                   </span>
                   ?
                 </h2>
-                <p className="text-xl text-gray-300 max-w-2xl">
+                <p className="text-xl text-gray-300 max-w-2xl mx-auto">
                   Join our beta program and be among the first to leverage AI-powered patient matching.
                 </p>
               </div>
-              <Link href="/request-access">
-                <Button className="bg-teal-500 hover:bg-teal-400 text-black font-medium text-lg px-8 py-6 whitespace-nowrap">
-                  Get Early Access <Zap className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+              
             </div>
           </div>
         </div>
