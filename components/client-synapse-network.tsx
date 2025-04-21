@@ -3,27 +3,26 @@
 import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 
-// Import the SynapseNetworkBackground component with SSR disabled and no loading fallback
+// Import with no SSR
 const SynapseNetworkBackground = dynamic(
   () => import('./synapse-network-background'),
-  { ssr: false, loading: () => null }
+  { 
+    ssr: false,
+    loading: () => null
+  }
 )
 
 export default function ClientSynapseNetwork() {
-  // Use state to track if we're in browser environment
-  const [isClient, setIsClient] = useState(false)
+  const [mounted, setMounted] = useState(false)
   
   useEffect(() => {
-    setIsClient(true)
+    setMounted(true)
   }, [])
   
-  // Prevent hydration issues by only rendering on client
-  if (!isClient) {
-    return null
-  }
+  if (!mounted) return null
   
   return (
-    <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-[-1]">
+    <div className="fixed inset-0 w-full h-full z-[-1]">
       <SynapseNetworkBackground />
     </div>
   )

@@ -5,29 +5,27 @@ import { motion } from "framer-motion"
 
 export default function SynapseNetworkBackground() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const sketchRef = useRef<any>(null)
-  const [loaded, setLoaded] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     // Only run in browser
-    if (typeof window === 'undefined' || !containerRef.current) return
-
-    // Dynamic import p5 only on client side
-    import('p5').then((p5Module) => {
-      const p5 = p5Module.default
-      setLoaded(true)
+    if (typeof window === 'undefined') return
+    
+    // First load the p5 script dynamically
+    const script = document.createElement('script')
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js'
+    script.async = true
+    script.onload = () => {
+      // Only initialize p5 after the script has loaded
+      if (!containerRef.current) return
+      
+      // Using the global p5 that was loaded via script
+      const p5 = window.p5
+      const container = containerRef.current
       
       // Create the p5 sketch
-      const sketch = (p: any) => {
-        const nodes: {
-          x: number
-          y: number
-          vx: number
-          vy: number
-          size: number
-          pulseSpeed: number
-          pulsePhase: number
-        }[] = []
+      const sketch = (p) => {
+        const nodes = []
         const numNodes = 150
         const maxDistance = 200
         const nodeColors = [
@@ -51,7 +49,7 @@ export default function SynapseNetworkBackground() {
           mouseActivity = 1 // Set to full activity when mouse moves
         }
 
-        const drawPulse = (node1: any, node2: any, distance: number) => {
+        const drawPulse = (node1, node2, distance) => {
           const pulseCount = 3 // Number of pulses
           for (let k = 0; k < pulseCount; k++) {
             const pulsePosition = (p.frameCount / 30 + k / pulseCount) % 1 // Normalized pulse position
@@ -217,23 +215,36 @@ export default function SynapseNetworkBackground() {
         }
       }
 
-      // Create new p5 instance
-      sketchRef.current = new p5(sketch, containerRef.current)
-
-      // Cleanup
-      return () => {
-        if (sketchRef.current) {
-          sketchRef.current.remove()
-        }
+      // Create new p5 instance with global p5
+      new p5(sketch, container)
+      setIsLoaded(true)
+    }
+    
+    document.body.appendChild(script)
+    
+    // Cleanup function
+    return () => {
+      if (script.parentNode) {
+        script.parentNode.removeChild(script)
       }
-    })
+      
+      // Remove any p5 instances that might be running
+      if (containerRef.current) {
+        const canvases = containerRef.current.querySelectorAll('canvas')
+        canvases.forEach(canvas => {
+          if (canvas.parentNode) {
+            canvas.parentNode.removeChild(canvas)
+          }
+        })
+      }
+    }
   }, [])
 
   return (
     <motion.div
       ref={containerRef}
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      animate={{ opacity: isLoaded ? 1 : 0 }}
       transition={{ duration: 1.5 }}
       className="fixed inset-0 w-screen h-screen z-0"
       style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0 }}
