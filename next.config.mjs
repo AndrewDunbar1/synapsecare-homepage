@@ -15,13 +15,12 @@ try {
 const nextConfig = {
   // Add output: 'export' for static site generation
   output: 'export',
-  // Set basePath for GitHub Pages deployment
-  // Replace '/synapsecare-homepage' if your repository name is different
-  basePath: '/synapsecare-homepage',
+  // No basePath for custom domain
+  // basePath: '/synapsecare-homepage',
   // Enable trailing slash for better compatibility
   trailingSlash: true,
-  // Asset prefix for GitHub Pages
-  assetPrefix: '/synapsecare-homepage',
+  // No asset prefix for custom domain
+  // assetPrefix: '/synapsecare-homepage',
   // Skip prerendering 404 page
   skipTrailingSlashRedirect: true,
   skipMiddlewareUrlNormalize: true,

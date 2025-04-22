@@ -3,7 +3,7 @@
 # Exit on any error
 set -e
 
-echo "💫 Starting deployment process for GitHub Pages..."
+echo "💫 Starting deployment process for SynapseCare.ai..."
 
 # Clean previous builds
 echo "🧹 Cleaning previous builds..."
@@ -22,21 +22,26 @@ npm run build
 echo "📄 Creating necessary files for GitHub Pages..."
 touch out/.nojekyll
 
+# Make sure CNAME file is present
+echo "🌐 Setting up custom domain..."
+echo "synapsecare.ai" > out/CNAME
+
 # Create a custom 404 page
 echo "🔍 Creating custom 404 page..."
 cp out/index.html out/404.html
 
 # Add a root index.html file to the out directory
-echo "🔄 Adding root-level index.html for GitHub Pages..."
+echo "🔄 Adding root-level index.html..."
 cp public/fallback-index.html out/index.html
 
 # Create a README file in the out directory to document the deployment
 cat > out/README.md << EOF
-# SynapseCare Homepage
+# SynapseCare
 
 This is the statically generated site for SynapseCare.
 
 - Repository: https://github.com/AndrewDunbar1/synapsecare-homepage
+- Website: https://synapsecare.ai
 - Last deployment: $(date)
 EOF
 
@@ -55,8 +60,9 @@ echo "🚀 Deploying to GitHub Pages..."
 npx gh-pages -d out --dotfiles --add
 
 echo "✅ Deployment complete! Your site should be available at:"
-echo "   https://andrewdunbar1.github.io/synapsecare-homepage/"
+echo "   https://synapsecare.ai"
 echo ""
 echo "If the site isn't working properly, check:"
 echo "1. Repository settings -> Pages to confirm the source is set to gh-pages branch"
-echo "2. Visit https://andrewdunbar1.github.io/synapsecare-homepage/build-info.txt to verify deployment"
+echo "2. Visit https://synapsecare.ai/build-info.txt to verify deployment"
+echo "3. DNS settings for synapsecare.ai to ensure they point to GitHub Pages"
