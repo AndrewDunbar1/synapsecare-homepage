@@ -16,39 +16,62 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <head>
         <Script id="fix-paths" strategy="beforeInteractive">
           {`
             (function() {
-              if (window.location.hostname !== 'localhost') {
-                var base = document.createElement('base');
-                base.href = '/synapsecare-homepage/';
-                document.head.prepend(base);
+              try {
+                if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+                  var base = '/synapsecare-homepage';
+                  
+                  // Fix dynamic imports paths
+                  var originalCreateElement = document.createElement;
+                  document.createElement = function(tag) {
+                    var element = originalCreateElement.call(document, tag);
+                    if (tag.toLowerCase() === 'script') {
+                      var originalSetAttribute = element.setAttribute;
+                      element.setAttribute = function(name, value) {
+                        if (name === 'src' && value && value.startsWith('/') && !value.startsWith(base)) {
+                          value = base + value;
+                        }
+                        return originalSetAttribute.call(this, name, value);
+                      };
+                    }
+                    return element;
+                  };
+                  
+                  // Fix link hrefs and script srcs
+                  var fixElements = function() {
+                    var links = document.getElementsByTagName('link');
+                    var scripts = document.getElementsByTagName('script');
+                    
+                    for (var i = 0; i < links.length; i++) {
+                      if (links[i].href && !links[i].href.includes(base) && links[i].href.startsWith(window.location.origin)) {
+                        links[i].href = links[i].href.replace(window.location.origin, window.location.origin + base);
+                      }
+                    }
+                    
+                    for (var j = 0; j < scripts.length; j++) {
+                      if (scripts[j].src && !scripts[j].src.includes(base) && scripts[j].src.startsWith(window.location.origin)) {
+                        scripts[j].src = scripts[j].src.replace(window.location.origin, window.location.origin + base);
+                      }
+                    }
+                  };
+                  
+                  fixElements();
+                  // Run periodically to catch dynamically added elements
+                  setInterval(fixElements, 1000);
+                }
+              } catch(e) {
+                console.error('Error in path fix script:', e);
               }
             })();
           `}
         </Script>
-        {/* Add inline critical CSS to ensure basic styling is available immediately */}
-        <style dangerouslySetInnerHTML={{ __html: `
-          body { 
-            background-color: #000000; 
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-          }
-          .bg-black {
-            background-color: #000000;
-          }
-          .text-white {
-            color: #ffffff;
-          }
-        `}} />
-        {/* Preload the p5.js library */}
-        <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" as="script" />
       </head>
       <body className="bg-black min-h-screen">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+        <ThemeProvider attribute="class" defaultTheme="dark">
           {children}
         </ThemeProvider>
       </body>

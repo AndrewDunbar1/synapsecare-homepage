@@ -92,6 +92,7 @@ export default function NeuralNetworkSimulation() {
 
     // Create connections between nodes
     const connectionDistance = 30
+    const lineGeometry = new THREE.BufferGeometry()
 
     function updateConnections() {
       // Remove old connections

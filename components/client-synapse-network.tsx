@@ -8,9 +8,7 @@ const SynapseNetworkBackground = dynamic(
   () => import('./synapse-network-background'),
   { 
     ssr: false,
-    loading: () => (
-      <div className="fixed inset-0 w-full h-full z-[-1] bg-black bg-gradient-to-b from-teal-950/20 to-black/90 opacity-50" />
-    )
+    loading: () => null
   }
 )
 
@@ -21,11 +19,7 @@ export default function ClientSynapseNetwork() {
     setMounted(true)
   }, [])
   
-  if (!mounted) {
-    return (
-      <div className="fixed inset-0 w-full h-full z-[-1] bg-black bg-gradient-to-b from-teal-950/20 to-black/90 opacity-50" />
-    )
-  }
+  if (!mounted) return null
   
   return (
     <div className="fixed inset-0 w-full h-full z-[-1]">
