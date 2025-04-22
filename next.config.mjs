@@ -18,8 +18,8 @@ const nextConfig = {
   // Set basePath for GitHub Pages deployment
   // Replace '/synapsecare-homepage' if your repository name is different
   basePath: '/synapsecare-homepage',
-  // Disable trailing slash to prevent path issues
-  trailingSlash: false,
+  // Enable trailing slash for better compatibility
+  trailingSlash: true,
   // Asset prefix for GitHub Pages
   assetPrefix: '/synapsecare-homepage',
   // Skip prerendering 404 page
@@ -36,7 +36,7 @@ const nextConfig = {
     unoptimized: true,
   },
   experimental: {
-    webpackBuildWorker: true,
+    webpackBuildWorker: false,
     parallelServerBuildTraces: true,
     parallelServerCompiles: true,
   },
