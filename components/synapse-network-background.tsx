@@ -57,6 +57,9 @@ export default function SynapseNetworkBackground() {
         let lastMouseMoveTime = 0
         let mouseActivity = 0 // 0-1 value for mouse activity
         
+        let oldWidth: number; // To store canvas width before resize
+        let oldHeight: number; // To store canvas height before resize
+
         p.mouseMoved = () => {
           mouseX = p.mouseX
           mouseY = p.mouseY
@@ -90,6 +93,9 @@ export default function SynapseNetworkBackground() {
           canvas.style("top", "0")
           canvas.style("left", "0")
           canvas.style("z-index", "-1")
+
+          oldWidth = p.width; // Initialize old dimensions
+          oldHeight = p.height;
 
           // Initialize nodes - distribute them across the entire screen
           for (let i = 0; i < numNodes; i++) {
@@ -226,7 +232,28 @@ export default function SynapseNetworkBackground() {
         }
 
         p.windowResized = () => {
-          p.resizeCanvas(p.windowWidth, p.windowHeight)
+          const newWidth = p.windowWidth;
+          const newHeight = p.windowHeight;
+
+          p.resizeCanvas(newWidth, newHeight);
+
+          // Scale node positions
+          const scaleX = newWidth / oldWidth;
+          const scaleY = newHeight / oldHeight;
+
+          for (let i = 0; i < nodes.length; i++) {
+            const n = nodes[i];
+            n.x *= scaleX;
+            n.y *= scaleY;
+
+            // Ensure nodes are within new bounds
+            n.x = p.constrain(n.x, 0, newWidth);
+            n.y = p.constrain(n.y, 0, newHeight);
+          }
+
+          // Update old dimensions for the next resize event
+          oldWidth = newWidth;
+          oldHeight = newHeight;
         }
       }
 
