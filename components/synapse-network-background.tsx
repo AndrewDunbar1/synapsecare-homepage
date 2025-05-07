@@ -87,21 +87,24 @@ export default function SynapseNetworkBackground() {
         }
 
         p.setup = () => {
-          const canvas = p.createCanvas(p.windowWidth, p.windowHeight)
+          // Ensure initial canvas is at least 1x1
+          const initialWidth = Math.max(1, p.windowWidth);
+          const initialHeight = Math.max(1, p.windowHeight);
+          const canvas = p.createCanvas(initialWidth, initialHeight);
           canvas.style("display", "block")
           canvas.style("position", "fixed")
           canvas.style("top", "0")
           canvas.style("left", "0")
           canvas.style("z-index", "-1")
 
-          oldWidth = p.width; // Initialize old dimensions
-          oldHeight = p.height;
+          oldWidth = initialWidth; // Initialize old dimensions
+          oldHeight = initialHeight;
 
           // Initialize nodes - distribute them across the entire screen
           for (let i = 0; i < numNodes; i++) {
             nodes.push({
-              x: p.random(p.width),
-              y: p.random(p.height),
+              x: p.random(initialWidth), // Use initialWidth for distribution
+              y: p.random(initialHeight), // Use initialHeight for distribution
               vx: p.random(-0.5, 0.5),
               vy: p.random(-0.5, 0.5),
               size: p.random(2.5, 5),
@@ -235,25 +238,30 @@ export default function SynapseNetworkBackground() {
           const newWidth = p.windowWidth;
           const newHeight = p.windowHeight;
 
-          p.resizeCanvas(newWidth, newHeight);
-
-          // Scale node positions
-          const scaleX = newWidth / oldWidth;
-          const scaleY = newHeight / oldHeight;
+          // Ensure new dimensions are at least 1 to prevent oldWidth/oldHeight becoming 0
+          // This also prevents canvas of 0 size which might cause issues.
+          const effectiveNewWidth = Math.max(1, newWidth);
+          const effectiveNewHeight = Math.max(1, newHeight);
+          
+          // oldWidth and oldHeight are guaranteed to be >= 1 from setup or previous valid resizes.
+          const scaleX = effectiveNewWidth / oldWidth;
+          const scaleY = effectiveNewHeight / oldHeight;
+          
+          p.resizeCanvas(effectiveNewWidth, effectiveNewHeight);
 
           for (let i = 0; i < nodes.length; i++) {
             const n = nodes[i];
             n.x *= scaleX;
             n.y *= scaleY;
 
-            // Ensure nodes are within new bounds
-            n.x = p.constrain(n.x, 0, newWidth);
-            n.y = p.constrain(n.y, 0, newHeight);
+            // Constrain to the actual new canvas dimensions
+            n.x = p.constrain(n.x, 0, effectiveNewWidth);
+            n.y = p.constrain(n.y, 0, effectiveNewHeight);
           }
 
-          // Update old dimensions for the next resize event
-          oldWidth = newWidth;
-          oldHeight = newHeight;
+          // Update old dimensions with the effective positive values
+          oldWidth = effectiveNewWidth;
+          oldHeight = effectiveNewHeight;
         }
       }
 
